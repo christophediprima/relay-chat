@@ -23,7 +23,7 @@ class ThreadListItem extends React.Component {
   }
 
   render() {
-    const {thread} = this.props;
+    const {thread, viewer} = this.props;
     const lastMessage = thread.messages.edges[0].node;
     return (
       <li
@@ -79,7 +79,8 @@ export default Relay.createContainer(ThreadListItem, {
     `,
     viewer: () => Relay.QL`
       fragment on User {
-        id
+        id,
+        name,
         ${MarkThreadAsReadMutation.getFragment('viewer')}
       }
     `

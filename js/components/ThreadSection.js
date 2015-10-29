@@ -41,6 +41,7 @@ class ThreadSection extends React.Component {
         <div className="thread-count">
           {unread}
         </div>
+        <div className="viewer-name">Loged as : {viewer.name}</div>
         <ul className="thread-list">
           {threadListItems}
         </ul>
@@ -68,6 +69,7 @@ export default Relay.createContainer(ThreadSection, {
     `,
     viewer: () => Relay.QL`
       fragment on User {
+        name
         ${ThreadListItem.getFragment('viewer')}
       }
     `

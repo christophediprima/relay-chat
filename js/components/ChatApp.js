@@ -27,9 +27,13 @@ class ChatApp extends React.Component {
     // 如果 route 是'/'的時候自動把 route 轉到 threads[0] 的 id 對應到的
     // 'thread/:id' 去，因為目前無法在更上層 access 到 這個 id, 所以先這樣做
     // TODO: better if we can do it in route config
-    const currentThreadID = this.props.viewer.threads.edges[0].node.id;
-    if (window.location.pathname === '/' ) {
-      this.context.history.pushState(null, `/thread/${currentThreadID}`);
+    if(this.props.viewer.name ===  ''){
+      this.context.history.pushState(null, `/login`);
+    }else{
+      const currentThreadID = this.props.viewer.threads.edges[0].node.id;
+      if (window.location.pathname === '/' ) {
+        this.context.history.pushState(null, `/thread/${currentThreadID}`);
+      }
     }
   }
 
@@ -60,6 +64,7 @@ export default Relay.createContainer(ChatApp, {
     // 如果你要 query 任何 edges 裡的東西, 所以我們這裡假定一個很大的數
     viewer: () => Relay.QL`
       fragment on User {
+        name,
         threads(first: 9007199254740991) {
           edges {
             node {

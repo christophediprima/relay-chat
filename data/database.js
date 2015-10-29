@@ -21,6 +21,11 @@ export function addMessage(text, currentThreadID) {
   };
 }
 
+export function setViewerName(name) {
+  var viewer = getViewer();
+  viewer.name = name;
+}
+
 export function markThreadAsRead(id) {
   var thread = getThread(id);
   thread.isRead = true;

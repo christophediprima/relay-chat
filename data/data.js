@@ -8,6 +8,8 @@ export const VIEWER_ID = 'me';
 // Mock user data
 var viewer = new User();
 viewer.id = VIEWER_ID;
+viewer.name = "";
+
 export var usersById = {
   [VIEWER_ID]: viewer
 };

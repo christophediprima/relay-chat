@@ -2,8 +2,10 @@ import React from 'react';
 import {Route} from 'react-router';
 import ChatApp from '../components/ChatApp';
 import MessageSection from '../components/MessageSection';
+import LoginSection from '../components/LoginSection';
 import chatAppQueries from './chatApp';
 import messageSectionQueries from './messageSection';
+import loginSectionQueries from './loginSection';
 
 // with react-router-relay, we can define mutiple root queries
 // for different component with our react-router <Route>
@@ -14,6 +16,8 @@ import messageSectionQueries from './messageSection';
 
 export default (
   <Route path="/" component={ChatApp} queries={chatAppQueries}>
+    <Route path="login" component={LoginSection}
+      queries={loginSectionQueries} />
     <Route path="thread/:id" component={MessageSection}
       queries={messageSectionQueries} />
   </Route>

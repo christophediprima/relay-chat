@@ -34,6 +34,7 @@ import {
   markThreadAsRead,
   getUser,
   getViewer,
+  setViewerName,
 } from './database';
 
 var {nodeInterface, nodeField} = nodeDefinitions(
@@ -130,6 +131,10 @@ var GraphQLUser = new GraphQLObjectType({
   name: 'User',
   fields: {
     id: globalIdField('User'),
+    name: {
+      type: GraphQLString,
+      resolve: (obj) => obj.name
+    },
     threads: {
       type: ThreadConnection,
       args: connectionArgs,
@@ -208,11 +213,29 @@ var GraphQLMarkThreadAsReadMutation = mutationWithClientMutationId({
   },
 });
 
+var GraphQLSetViewerNameMutation = mutationWithClientMutationId({
+  name: 'SetViewerName',
+  inputFields: {
+    name: { type: new GraphQLNonNull(GraphQLString)}
+  },
+  outputFields: {
+    viewer: {
+      type: GraphQLUser,
+      resolve: ({}) => getViewer(),
+    },
+  },
+  mutateAndGetPayload: ({name}) => {
+    setViewerName(name);
+    return {};
+  },
+});
+
 var Mutation = new GraphQLObjectType({
   name: 'Mutation',
   fields: {
     addMessage: GraphQLAddMessageMutation,
-    markThreadAsRead: GraphQLMarkThreadAsReadMutation
+    markThreadAsRead: GraphQLMarkThreadAsReadMutation,
+    setViewerName: GraphQLSetViewerNameMutation,
   },
 });
 
