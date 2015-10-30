@@ -13,8 +13,8 @@
 import React from 'react';
 import Relay from 'react-relay';
 import { PropTypes } from 'react-router';
-import ThreadSection from './ThreadSection';
-import MessageSection from './MessageSection';
+import ThreadSection from './sections/ThreadSection';
+import MessageSection from './sections/MessageSection';
 
 class ChatApp extends React.Component {
 
@@ -48,7 +48,11 @@ class ChatApp extends React.Component {
     const {viewer, viewer: {threads}} = this.props;
     return (
       <div className="chatapp">
-        <ThreadSection threads={threads} viewer={viewer}/>
+        <div className="header">
+          {
+            viewer.name
+          }
+        </div>
         {this.props.children}
       </div>
     );

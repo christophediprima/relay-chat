@@ -12,7 +12,7 @@
 
 import React from 'react';
 import Relay from 'react-relay';
-import ThreadListItem from '../components/ThreadListItem';
+import ThreadListItem from '../ThreadListItem';
 
 class ThreadSection extends React.Component {
 

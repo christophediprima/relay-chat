@@ -12,8 +12,8 @@
 
 import React from 'react';
 import Relay from 'react-relay';
-import MessageComposer from './MessageComposer';
-import MessageListItem from './MessageListItem';
+import MessageComposer from '../MessageComposer';
+import MessageListItem from '../MessageListItem';
 
 class MessageSection extends React.Component {
 

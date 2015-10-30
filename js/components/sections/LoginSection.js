@@ -12,7 +12,7 @@
 
 import React from 'react';
 import Relay from 'react-relay';
-import SetViewerNameMutation from '../mutations/SetViewerNameMutation';
+import SetViewerNameMutation from '../../mutations/SetViewerNameMutation';
 
 var ENTER_KEY_CODE = 13;
 
