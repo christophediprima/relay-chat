@@ -16,6 +16,7 @@ import { PropTypes } from 'react-router';
 import ThreadSection from './sections/ThreadSection';
 import MessageSection from './sections/MessageSection';
 import LoginSection from './sections/MessageSection';
+import SetViewerNameMutation from '../mutations/SetViewerNameMutation';
 
 class ChatApp extends React.Component {
 
@@ -37,6 +38,17 @@ class ChatApp extends React.Component {
           this.context.history.pushState(null, `/thread`);
         break;
       }
+    }
+  }
+  componentDidUpdate() {
+    // by default, set threads[0].id to currentID if pathname === '/'
+    // 如果 route 是'/'的時候自動把 route 轉到 threads[0] 的 id 對應到的
+    // 'thread/:id' 去，因為目前無法在更上層 access 到 這個 id, 所以先這樣做
+    // TODO: better if we can do it in route config
+    if(this.props.viewer.name ===  '' && window.location.pathname !== '/login'){
+      this.context.history.pushState(null, `/login`);
+    }else if(this.props.viewer.name !==  '' &&  window.location.pathname === '/login'){
+      this.context.history.pushState(null, `/thread`);
     }
   }
 
@@ -68,10 +80,11 @@ class ChatApp extends React.Component {
     // viewer, thread, isRead here would be props in MarkThreadAsReadMutation
     // 這裡的 viewer, thread, isRead 會變成 MarkThreadAsReadMutation
     // 的 props
-    console.log('call LogoutMutation');
-    // Relay.Store.update(new LogoutMutation({
-    //   viewer: this.props.viewer
-    // }));
+
+    Relay.Store.update(new SetViewerNameMutation({
+      name: '',
+      viewer: this.props.viewer
+    }));
   }
 
 }
@@ -87,7 +100,8 @@ export default Relay.createContainer(ChatApp, {
         name,
         ${ThreadSection.getFragment('viewer')},
         ${MessageSection.getFragment('viewer')},
-        ${LoginSection.getFragment('viewer')}
+        ${LoginSection.getFragment('viewer')},
+        ${SetViewerNameMutation.getFragment('viewer')}
       }
     `
   },
