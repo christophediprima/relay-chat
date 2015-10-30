@@ -84,7 +84,7 @@ export default class AddMessageMutation extends Relay.Mutation {
 
   getOptimisticResponse() {
     let viewerPayload;
-    const {id, threads} = this.props.viewer;
+    const {id, name, threads} = this.props.viewer;
     const {unreadCount} = threads;
     if (threads) {
       viewerPayload = {id: id, threads: {}};
@@ -105,7 +105,7 @@ export default class AddMessageMutation extends Relay.Mutation {
           // since there might a chance that it could collide with another
           // node from the server.
           // 如果我們自己 specify id 有可能會跟 server 的 id 衝突，讓 Relay 幫我們處理
-          authorName: 'me', // hard coded for the example
+          authorName: name,
           timestamp: timestamp,
           text: this.props.text,
         },

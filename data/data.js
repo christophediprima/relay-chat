@@ -28,7 +28,7 @@ var messages = [
     id: 'm_1',
     threadID: 't_1',
     threadName: 'Jing and Me',
-    authorName: 'me',
+    authorName: viewer.name,
     text: 'Hey Jing, want to give a Flux talk at ForwardJS?',
     timestamp: Date.now() - 99999
   },
@@ -36,7 +36,7 @@ var messages = [
     id: 'm_2',
     threadID: 't_1',
     threadName: 'Jing and me',
-    authorName: 'me',
+    authorName: viewer.name,
     text: 'Seems like a pretty cool conference.',
     timestamp: Date.now() - 89999
   },
@@ -52,7 +52,7 @@ var messages = [
     id: 'm_4',
     threadID: 't_2',
     threadName: 'Dave and me',
-    authorName: 'me',
+    authorName: viewer.name,
     text: 'Hey Dave, want to get a beer after the conference?',
     timestamp: Date.now() - 69999
   },
@@ -68,7 +68,7 @@ var messages = [
     id: 'm_6',
     threadID: 't_3',
     threadName: 'Brian and me',
-    authorName: 'me',
+    authorName: viewer.name,
     text: 'Hey Brian, are you going to be talking about functional stuff?',
     timestamp: Date.now() - 49999
   },

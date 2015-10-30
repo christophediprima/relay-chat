@@ -1,11 +1,11 @@
-import {Message, VIEWER_ID, usersById, threadsById, threadIdsByUser,
+import {Message, Thread, VIEWER_ID, usersById, threadsById, threadIdsByUser,
   messagesById, messageIdsByThread} from './data';
 
 export function addMessage(text, currentThreadID) {
   var timestamp = Date.now();
   var message = new Message();
   message.id = 'm_' + timestamp;
-  message.authorName = 'me'; // hard coded for the example
+  message.authorName = getViewerName();
   message.text = text;
   message.timestamp = timestamp;
 
@@ -21,9 +21,32 @@ export function addMessage(text, currentThreadID) {
   };
 }
 
+export function addThread(name, userId) {
+  var timestamp = Date.now();
+  var thread = new Thread();
+
+  thread.id = 't_' + timestamp;
+  thread.name = name;
+  thread.isRead = true;
+  thread.lastUpdated = timestamp;
+  threadIdsByUser[userId].push(thread.id);
+  threadsById[thread.id] = thread;
+  threadsById[currentThreadID].isRead = true;
+  threadsById[currentThreadID].lastUpdated = timestamp;
+
+  return {
+    threadID: thread.id
+  };
+}
+
 export function setViewerName(name) {
   var viewer = getViewer();
   viewer.name = name;
+}
+
+export function getViewerName() {
+  var viewer = getViewer();
+  return viewer.name;
 }
 
 export function markThreadAsRead(id) {

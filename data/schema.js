@@ -26,6 +26,7 @@ import {
 } from './data.js';
 
 import {
+  addThread,
   addMessage,
   getMessage,
   getMessagesByThreadId,
@@ -155,10 +156,10 @@ var Root = new GraphQLObjectType({
   },
 });
 
-var GraphQLAddMessageMutation = mutationWithClientMutationId({
-  name: 'AddMessage',
+var GraphQLAddThreadMutation = mutationWithClientMutationId({
+  name: 'AddThread',
   inputFields: {
-    text: { type: new GraphQLNonNull(GraphQLString) },
+    name: { type: new GraphQLNonNull(GraphQLString) },
     id: { type: new GraphQLNonNull(GraphQLID) },
   },
   outputFields: {
@@ -179,6 +180,31 @@ var GraphQLAddMessageMutation = mutationWithClientMutationId({
     },
     viewer: {
       type: GraphQLUser,
+      resolve: ({userId}) => usersById(userId),
+    },
+  },
+  mutateAndGetPayload: ({name, id}) => {
+    // important, else it would be encoded client id,
+    // then database don't know how to handle
+    var userId = fromGlobalId(id).id;
+    var {threadID} = addThread(name, userId);
+    return {threadID, userId};
+  }
+});
+
+var GraphQLAddMessageMutation = mutationWithClientMutationId({
+  name: 'AddMessage',
+  inputFields: {
+    text: { type: new GraphQLNonNull(GraphQLString) },
+    id: { type: new GraphQLNonNull(GraphQLID) },
+  },
+  outputFields: {
+    thread: {
+      type: GraphQLThread,
+      resolve: ({threadID}) => getThread(threadID)
+    },
+    viewer: {
+      type: GraphQLUser,
       resolve: () => getViewer(),
     },
   },
@@ -187,7 +213,7 @@ var GraphQLAddMessageMutation = mutationWithClientMutationId({
     // then database don't know how to handle
     var localThreadId = fromGlobalId(id).id;
     var {messageID, threadID} = addMessage(text, localThreadId);
-    return {messageID, threadID};
+    return {threadID};
   }
 });
 
@@ -233,6 +259,7 @@ var GraphQLSetViewerNameMutation = mutationWithClientMutationId({
 var Mutation = new GraphQLObjectType({
   name: 'Mutation',
   fields: {
+    addThread: GraphQLAddThreadMutation,
     addMessage: GraphQLAddMessageMutation,
     markThreadAsRead: GraphQLMarkThreadAsReadMutation,
     setViewerName: GraphQLSetViewerNameMutation,
