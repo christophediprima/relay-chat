@@ -852,18 +852,6 @@
           "description": null,
           "fields": [
             {
-              "name": "messageEdge",
-              "description": null,
-              "args": [],
-              "type": {
-                "kind": "OBJECT",
-                "name": "MessageEdge",
-                "ofType": null
-              },
-              "isDeprecated": false,
-              "deprecationReason": null
-            },
-            {
               "name": "thread",
               "description": null,
               "args": [],
@@ -967,6 +955,18 @@
           "name": "AddMessagePayload",
           "description": null,
           "fields": [
+            {
+              "name": "messageEdge",
+              "description": null,
+              "args": [],
+              "type": {
+                "kind": "OBJECT",
+                "name": "MessageEdge",
+                "ofType": null
+              },
+              "isDeprecated": false,
+              "deprecationReason": null
+            },
             {
               "name": "thread",
               "description": null,

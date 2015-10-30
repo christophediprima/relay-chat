@@ -15,6 +15,7 @@ import Relay from 'react-relay';
 import { PropTypes } from 'react-router';
 import ThreadSection from './sections/ThreadSection';
 import MessageSection from './sections/MessageSection';
+import LoginSection from './sections/MessageSection';
 
 class ChatApp extends React.Component {
 
@@ -30,9 +31,10 @@ class ChatApp extends React.Component {
     if(this.props.viewer.name ===  ''){
       this.context.history.pushState(null, `/login`);
     }else{
-      const currentThreadID = this.props.viewer.threads.edges[0].node.id;
+      console.log(this.props.viewer);
+
       if (window.location.pathname === '/' ) {
-        this.context.history.pushState(null, `/thread/${currentThreadID}`);
+        this.context.history.pushState(null, `/thread`);
       }
     }
   }
@@ -45,12 +47,14 @@ class ChatApp extends React.Component {
     // 下面 specify 的 fragments 會變成這裡的 this.props
     // 注意： Relay 要求你在下層(ex: ThreadSection)用到的 fragments
     // 這裡要當 props 傳下去, 可以想成要跟 ThreadSection.getFragment...對應到
-    const {viewer, viewer: {threads}} = this.props;
+    const {viewer} = this.props;
+
     return (
       <div className="chatapp">
         <div className="header">
           {
-            viewer.name
+            viewer.name &&
+            <div className="viewer-name">Loged as : {viewer.name}</div>
           }
         </div>
         {this.props.children}
@@ -69,16 +73,9 @@ export default Relay.createContainer(ChatApp, {
     viewer: () => Relay.QL`
       fragment on User {
         name,
-        threads(first: 9007199254740991) {
-          edges {
-            node {
-              id,
-            },
-          },
-          ${ThreadSection.getFragment('threads')}
-        },
         ${ThreadSection.getFragment('viewer')},
-        ${MessageSection.getFragment('viewer')}
+        ${MessageSection.getFragment('viewer')},
+        ${LoginSection.getFragment('viewer')}
       }
     `
   },

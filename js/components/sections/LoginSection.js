@@ -25,8 +25,6 @@ class LoginSection extends React.Component {
 
   render() {
     const {viewer} = this.props;
-
-    console.log(viewer);
     return (
       <div>
         <div>Please provide a nickname</div>

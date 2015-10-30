@@ -12,7 +12,8 @@
 
 import React from 'react';
 import Relay from 'react-relay';
-import ThreadListItem from '../ThreadListItem';
+import ThreadList from '../ThreadList';
+
 
 class ThreadSection extends React.Component {
 
@@ -21,30 +22,20 @@ class ThreadSection extends React.Component {
     // since it's the not component router matches
     // 因為 ThreadSection 不是 router 碰到的 component, 所以我們只有用這個方法
     // 之後 Relay 會有 global cached 的 implementation, 就不用這樣做了
-    const {relay, threads: {edges, unreadCount}, viewer} = this.props;
-    const currentThreadID = relay.route.params.id;
-    const threadListItems = edges.map(edge => {
-      return (
-        <ThreadListItem
-          key={edge.node.id}
-          thread={edge.node}
-          viewer={viewer}
-          currentThreadID={currentThreadID}
-        />
-      );
-    });
+    const {relay, viewer, viewer : { threads }, viewer: { threads: {unreadCount}}} = this.props;
+
     const unread = unreadCount === 0 ?
-      null :
+      <span>No unread thread</span> :
       <span>Unread threads: {unreadCount}</span>;
     return (
-      <div className="thread-section">
-        <div className="thread-count">
-          {unread}
+      <div>
+        <div className="thread-section">
+          <div className="thread-count">
+            {unread}
+          </div>
+          <ThreadList threads={threads} viewer={viewer} />
         </div>
-        <div className="viewer-name">Loged as : {viewer.name}</div>
-        <ul className="thread-list">
-          {threadListItems}
-        </ul>
+        {this.props.children}
       </div>
     );
   }
@@ -56,21 +47,18 @@ class ThreadSection extends React.Component {
 // 會用到所以也要 specify ，這是 Relay 比較麻煩的地方
 export default Relay.createContainer(ThreadSection, {
   fragments: {
-    threads: () => Relay.QL`
-      fragment on ThreadConnection {
-        unreadCount,
-        edges {
-          node {
-            id,
-            ${ThreadListItem.getFragment('thread')}
-          }
-        }
-      }
-    `,
     viewer: () => Relay.QL`
       fragment on User {
-        name
-        ${ThreadListItem.getFragment('viewer')}
+        threads(first: 9007199254740991) {
+          unreadCount,
+          edges {
+            node {
+              id,
+            },
+          },
+          ${ThreadList.getFragment('threads')}
+        },
+        ${ThreadList.getFragment('viewer')}
       }
     `
   }

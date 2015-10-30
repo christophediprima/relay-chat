@@ -163,17 +163,6 @@ var GraphQLAddThreadMutation = mutationWithClientMutationId({
     id: { type: new GraphQLNonNull(GraphQLID) },
   },
   outputFields: {
-    messageEdge: {
-      type: GraphQLMessageEdge,
-      resolve: ({ messageID, threadID }) => {
-        var message = getMessage(messageID);
-        return {
-          cursor: cursorForObjectInConnection(getMessagesByThreadId(
-            threadID), message),
-          node: message,
-        };
-      }
-    },
     thread: {
       type: GraphQLThread,
       resolve: ({threadID}) => getThread(threadID)
@@ -199,6 +188,17 @@ var GraphQLAddMessageMutation = mutationWithClientMutationId({
     id: { type: new GraphQLNonNull(GraphQLID) },
   },
   outputFields: {
+    messageEdge: {
+      type: GraphQLMessageEdge,
+      resolve: ({ messageID, threadID }) => {
+        var message = getMessage(messageID);
+        return {
+          cursor: cursorForObjectInConnection(getMessagesByThreadId(
+            threadID), message),
+          node: message,
+        };
+      }
+    },
     thread: {
       type: GraphQLThread,
       resolve: ({threadID}) => getThread(threadID)
@@ -213,7 +213,7 @@ var GraphQLAddMessageMutation = mutationWithClientMutationId({
     // then database don't know how to handle
     var localThreadId = fromGlobalId(id).id;
     var {messageID, threadID} = addMessage(text, localThreadId);
-    return {threadID};
+    return {messageID, threadID};
   }
 });
 

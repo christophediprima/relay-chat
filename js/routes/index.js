@@ -17,7 +17,7 @@ import loginSectionQueries from '../queries/loginSection';
 // view 和 component, 只要再加 queries props 為不同 component 作 root queries即可
 
 function checkLogin(nextState, replaceState){
-  console.log(nextState);
+  // Should redirect to login here
 }
 
 export default (
