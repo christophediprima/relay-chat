@@ -35,7 +35,9 @@ class ThreadSection extends React.Component {
           </div>
           <ThreadList threads={threads} viewer={viewer} />
         </div>
-        {this.props.children}
+        {this.props.children ||
+          <span>Select a thread by clicking it.</span>
+          }
       </div>
     );
   }

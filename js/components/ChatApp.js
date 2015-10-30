@@ -31,10 +31,11 @@ class ChatApp extends React.Component {
     if(this.props.viewer.name ===  ''){
       this.context.history.pushState(null, `/login`);
     }else{
-      console.log(this.props.viewer);
-
-      if (window.location.pathname === '/' ) {
-        this.context.history.pushState(null, `/thread`);
+      switch(window.location.pathname){
+        case '/' :
+        case '/login' :
+          this.context.history.pushState(null, `/thread`);
+        break;
       }
     }
   }
@@ -51,15 +52,26 @@ class ChatApp extends React.Component {
 
     return (
       <div className="chatapp">
-        <div className="header">
-          {
-            viewer.name &&
-            <div className="viewer-name">Loged as : {viewer.name}</div>
+          { viewer.name &&
+            <div className="header">
+              <span className="viewer-name">Loged as : {viewer.name}</span>
+              <a style={{float: 'right'}} href="javascript:;" className="logout" onClick={this._logout}>Logout</a>
+            </div>
           }
-        </div>
+
         {this.props.children}
       </div>
     );
+  }
+  _logout = (event) => {
+    event.preventDefault();
+    // viewer, thread, isRead here would be props in MarkThreadAsReadMutation
+    // 這裡的 viewer, thread, isRead 會變成 MarkThreadAsReadMutation
+    // 的 props
+    console.log('call LogoutMutation');
+    // Relay.Store.update(new LogoutMutation({
+    //   viewer: this.props.viewer
+    // }));
   }
 
 }
