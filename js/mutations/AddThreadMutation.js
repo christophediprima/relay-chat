@@ -84,8 +84,7 @@ export default class AddThreadMutation extends Relay.Mutation {
           // 如果我們自己 specify id 有可能會跟 server 的 id 衝突，讓 Relay 幫我們處理
           authorName: viewer.name,
           timestamp: timestamp,
-          name: name,
-          messages: []
+          name: name
         },
       },
       viewer: viewer
