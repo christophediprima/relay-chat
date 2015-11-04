@@ -20,7 +20,8 @@ import {
 } from 'graphql-relay';
 
 import {
-  nodeInterface
+  nodeInterface,
+  interfaceInjectObject
 } from '../interface';
 
 import {
@@ -48,6 +49,8 @@ var GraphQLUser = new GraphQLObjectType({
   },
   interfaces: [nodeInterface]
 });
+
+interfaceInjectObject(GraphQLUser, 'user');
 
 module.exports = {
   GraphQLUser

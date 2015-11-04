@@ -14,12 +14,12 @@ import {
   getMessage,
   getThread,
   getViewer,
-  addMessage
+  addMessage,
+  getMessagesByThreadId
 } from '../../database';
 
 import {
-  GraphQLMessageEdge,
-  getMessagesByThreadId
+  GraphQLMessageEdge
 } from '../objects/message';
 
 import {

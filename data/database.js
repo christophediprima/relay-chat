@@ -13,6 +13,7 @@ export function addMessage(text, currentThreadID) {
   threadsById[currentThreadID].lastUpdated = timestamp;
 
   messagesById[message.id] = message;
+
   messageIdsByThread[currentThreadID].push(message.id);
 
   return {
@@ -89,6 +90,7 @@ export function getMessagesByThreadId(threadID) {
   orderedMessages.sort((x, y) => {
     return x.timestamp < y.timestamp ? -1 : x.timestamp > y.timestamp ? 1 : 0;
   });
+
   return orderedMessages;
 }
 

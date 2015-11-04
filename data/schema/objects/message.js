@@ -20,7 +20,8 @@ import {
 } from 'graphql-relay';
 
 import {
-  nodeInterface
+  nodeInterface,
+  interfaceInjectObject
 } from '../interface';
 
 var GraphQLMessage = new GraphQLObjectType({
@@ -50,6 +51,8 @@ var {
   name: 'Message',
   nodeType: GraphQLMessage,
 });
+
+interfaceInjectObject(GraphQLMessage, 'message');
 
 module.exports = {
   GraphQLMessage,

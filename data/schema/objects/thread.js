@@ -20,7 +20,8 @@ import {
 } from 'graphql-relay';
 
 import {
-  nodeInterface
+  nodeInterface,
+  interfaceInjectObject
 } from '../interface';
 
 import {
@@ -70,6 +71,8 @@ var {
     }
   })
 });
+
+interfaceInjectObject(GraphQLThread, 'thread');
 
 module.exports = {
   GraphQLThread,

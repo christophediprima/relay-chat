@@ -10,22 +10,15 @@ import {
 } from '../data';
 
 import {
-  GraphQLMessage
-} from './objects/message';
-
-import {
-  GraphQLThread
-} from './objects/thread';
-
-import {
-  GraphQLUser
-} from './objects/user';
-
-import {
   getMessage,
   getThread,
   getUser,
 } from '../database';
+
+var GraphQLObjects = {};
+var interfaceInjectObject = function(GraphQLObject, name){
+  GraphQLObjects[name] = GraphQLObject;
+}
 
 var {nodeInterface, nodeField} = nodeDefinitions(
   (globalId) => {
@@ -41,11 +34,11 @@ var {nodeInterface, nodeField} = nodeDefinitions(
   },
   (obj) => {
     if (obj instanceof Message) {
-      return GraphQLMessage;
+      return GraphQLObjects['message'];
     } else if (obj instanceof Thread) {
-      return GraphQLThread;
+      return GraphQLObjects['thread'];
     } else if (obj instanceof User) {
-      return GraphQLUser;
+      return GraphQLObjects['user'];
     }
     return null;
   }
@@ -53,5 +46,6 @@ var {nodeInterface, nodeField} = nodeDefinitions(
 
 module.exports = {
   nodeInterface,
-  nodeField
+  nodeField,
+  interfaceInjectObject
 };
