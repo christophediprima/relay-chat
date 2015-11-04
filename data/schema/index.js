@@ -20,10 +20,14 @@ import {
 } from 'graphql-relay';
 
 import {
+  nodeField
+} from './interface';
+
+import {
   User,
   Thread,
   Message,
-} from './data.js';
+} from '../data.js';
 
 import {
   addThread,
@@ -31,122 +35,27 @@ import {
   getMessage,
   getMessagesByThreadId,
   getThread,
-  getThreads,
   markThreadAsRead,
   getUser,
   getViewer,
   setViewerName,
-} from './database';
+} from '../database';
 
-var {nodeInterface, nodeField} = nodeDefinitions(
-  (globalId) => {
-    var {type, id} = fromGlobalId(globalId);
-    if (type === 'Message') {
-      return getMessage(id);
-    } else if (type === 'Thread') {
-      return getThread(id);
-    } else if (type === 'User') {
-      return getUser(id);
-    }
-    return null;
-  },
-  (obj) => {
-    if (obj instanceof Message) {
-      return GraphQLMessage;
-    } else if (obj instanceof Thread) {
-      return GraphQLThread;
-    } else if (obj instanceof User) {
-      return GraphQLUser;
-    }
-    return null;
-  }
-);
+import {
+  GraphQLMessage,
+  MessageConnection,
+  GraphQLMessageEdge
+} from './objects/message';
 
-var GraphQLMessage = new GraphQLObjectType({
-  name: 'Message',
-  fields: {
-    id: globalIdField('Message'),
-    authorName: {
-      type: GraphQLString,
-      resolve: (obj) => obj.authorName
-    },
-    text: {
-      type: GraphQLString,
-      resolve: (obj) => obj.text
-    },
-    timestamp: {
-      type: GraphQLInt,
-      resolve: (obj) => obj.timestamp
-    }
-  },
-  interfaces: [nodeInterface]
-});
+import {
+  GraphQLThread,
+  ThreadConnection
+} from './objects/thread';
 
-var {
-  connectionType: MessageConnection,
-  edgeType: GraphQLMessageEdge,
-} = connectionDefinitions({
-  name: 'Message',
-  nodeType: GraphQLMessage,
-});
+import {
+  GraphQLUser
+} from './objects/user';
 
-var GraphQLThread = new GraphQLObjectType({
-  name: 'Thread',
-  fields: {
-    id: globalIdField('Thread'),
-    name: {
-      type: GraphQLString,
-      resolve: (obj) => obj.name
-    },
-    isRead: {
-      type: GraphQLBoolean,
-      resolve: (obj) => obj.isRead
-    },
-    messages: {
-      type: MessageConnection,
-      args: connectionArgs,
-      resolve: (thread, args) => {
-        return connectionFromArray(getMessagesByThreadId(thread.id), args);
-      }
-    },
-    lastUpdated: {
-      type: GraphQLInt,
-      resolve: (obj) => obj.lastUpdated
-    }
-  },
-  interfaces: [nodeInterface]
-});
-
-var {
-  connectionType: ThreadConnection,
-  edgeType: GraphQLThreadEdge,
- } = connectionDefinitions({
-  name: 'Thread',
-  nodeType: GraphQLThread,
-  connectionFields: () => ({
-    unreadCount: {
-      type: GraphQLInt,
-      resolve: (conn) => conn.edges.filter(edge => !edge.node.isRead).length
-    }
-  })
-});
-
-var GraphQLUser = new GraphQLObjectType({
-  name: 'User',
-  fields: {
-    id: globalIdField('User'),
-    name: {
-      type: GraphQLString,
-      resolve: (obj) => obj.name
-    },
-    threads: {
-      type: ThreadConnection,
-      args: connectionArgs,
-      resolve: (obj, args) => connectionFromArray(getThreads(), args),
-    }
-  },
-  interfaces: [nodeInterface]
-});
 
 var Root = new GraphQLObjectType({
   name: 'Root',
@@ -166,20 +75,13 @@ var GraphQLAddThreadMutation = mutationWithClientMutationId({
     id: { type: new GraphQLNonNull(GraphQLID) },
   },
   outputFields: {
-    threadEdge: {
-      type: GraphQLThreadEdge,
-      resolve: ({ threadID, userID }) => {
-        var thread = getThread(threadID);
-        return {
-          cursor: cursorForObjectInConnection(getThreadsByUserId(
-            userID), thread),
-          node: thread,
-        };
-      }
+    thread: {
+      type: GraphQLThread,
+      resolve: ({threadID}) => getThread(threadID)
     },
     viewer: {
       type: GraphQLUser,
-      resolve: ({userId}) => usersById(userId),
+      resolve: ({userId}) => getUser(userId),
     },
   },
   mutateAndGetPayload: ({name, id}) => {

@@ -13,6 +13,7 @@
 import React from 'react';
 import Relay from 'react-relay';
 import ThreadList from '../ThreadList';
+import ThreadAdder from '../ThreadAdder';
 
 
 class ThreadSection extends React.Component {
@@ -34,6 +35,7 @@ class ThreadSection extends React.Component {
             {unread}
           </div>
           <ThreadList threads={threads} viewer={viewer} />
+          <ThreadAdder threads={threads} viewer={viewer}></ThreadAdder>
         </div>
         {this.props.children ||
           <span>Select a thread by clicking it.</span>
@@ -60,7 +62,8 @@ export default Relay.createContainer(ThreadSection, {
           },
           ${ThreadList.getFragment('threads')}
         },
-        ${ThreadList.getFragment('viewer')}
+        ${ThreadList.getFragment('viewer')},
+        ${ThreadAdder.getFragment('viewer')}
       }
     `
   }

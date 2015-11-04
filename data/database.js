@@ -29,6 +29,7 @@ export function addThread(name, userId) {
   thread.name = name;
   thread.isRead = true;
   thread.lastUpdated = timestamp;
+  thread.messages = [];
   threadIdsByUser[userId].push(thread.id);
   threadsById[thread.id] = thread;
   threadsById[currentThreadID].isRead = true;
@@ -60,6 +61,16 @@ export function getThread(id) {
 
 export function getThreads() {
   let orderedThreads = threadIdsByUser[VIEWER_ID].map(id => getThread(id));
+  // let newer thread get lower index
+  orderedThreads.sort((x, y) => {
+    return x.lastUpdated > y.lastUpdated ?
+      -1 : x.lastUpdated < y.lastUpdated ? 1 : 0;
+  });
+  return orderedThreads;
+}
+
+export function getThreadsByUserId(userID) {
+  let orderedThreads = threadIdsByUser[userID].map(id => getThread(id));
   // let newer thread get lower index
   orderedThreads.sort((x, y) => {
     return x.lastUpdated > y.lastUpdated ?
