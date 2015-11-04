@@ -4,6 +4,24 @@ import {
 } from 'graphql-relay';
 
 import {
+  User,
+  Thread,
+  Message,
+} from '../data';
+
+import {
+  GraphQLMessage
+} from './objects/message';
+
+import {
+  GraphQLThread
+} from './objects/thread';
+
+import {
+  GraphQLUser
+} from './objects/user';
+
+import {
   getMessage,
   getThread,
   getUser,

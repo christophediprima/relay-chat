@@ -852,12 +852,12 @@
           "description": null,
           "fields": [
             {
-              "name": "threadEdge",
+              "name": "thread",
               "description": null,
               "args": [],
               "type": {
                 "kind": "OBJECT",
-                "name": "ThreadEdge",
+                "name": "Thread",
                 "ofType": null
               },
               "isDeprecated": false,

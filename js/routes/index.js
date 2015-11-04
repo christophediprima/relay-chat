@@ -26,5 +26,6 @@ export default (
     <Route path="thread" component={ThreadSection} queries={threadSectionQueries}>
       <Route path=":id" component={MessageSection} queries={messageSectionQueries} />
     </Route>
+    <Route path="*" component={LoginSection} queries={loginSectionQueries} />
   </Route>
 );

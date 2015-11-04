@@ -56,6 +56,22 @@ import {
   GraphQLUser
 } from './objects/user';
 
+import {
+  GraphQLAddMessageMutation
+} from './mutations/addMessage';
+
+import {
+  GraphQLAddThreadMutation
+} from './mutations/addThread';
+
+import {
+  GraphQLMarkThreadAsReadMutation
+} from './mutations/markThreadAsRead';
+
+import {
+  GraphQLSetViewerNameMutation
+} from './mutations/setViewerName';
+
 
 var Root = new GraphQLObjectType({
   name: 'Root',
@@ -65,106 +81,6 @@ var Root = new GraphQLObjectType({
       resolve: () => getViewer()
     },
     node: nodeField
-  },
-});
-
-var GraphQLAddThreadMutation = mutationWithClientMutationId({
-  name: 'AddThread',
-  inputFields: {
-    name: { type: new GraphQLNonNull(GraphQLString) },
-    id: { type: new GraphQLNonNull(GraphQLID) },
-  },
-  outputFields: {
-    thread: {
-      type: GraphQLThread,
-      resolve: ({threadID}) => getThread(threadID)
-    },
-    viewer: {
-      type: GraphQLUser,
-      resolve: ({userId}) => getUser(userId),
-    },
-  },
-  mutateAndGetPayload: ({name, id}) => {
-    // important, else it would be encoded client id,
-    // then database don't know how to handle
-    var userId = fromGlobalId(id).id;
-    var {threadID} = addThread(name, userId);
-    return {threadID, userId};
-  }
-});
-
-var GraphQLAddMessageMutation = mutationWithClientMutationId({
-  name: 'AddMessage',
-  inputFields: {
-    text: { type: new GraphQLNonNull(GraphQLString) },
-    id: { type: new GraphQLNonNull(GraphQLID) },
-  },
-  outputFields: {
-    messageEdge: {
-      type: GraphQLMessageEdge,
-      resolve: ({ messageID, threadID }) => {
-        var message = getMessage(messageID);
-        return {
-          cursor: cursorForObjectInConnection(getMessagesByThreadId(
-            threadID), message),
-          node: message,
-        };
-      }
-    },
-    thread: {
-      type: GraphQLThread,
-      resolve: ({threadID}) => getThread(threadID)
-    },
-    viewer: {
-      type: GraphQLUser,
-      resolve: () => getViewer(),
-    },
-  },
-  mutateAndGetPayload: ({text, id}) => {
-    // important, else it would be encoded client id,
-    // then database don't know how to handle
-    var localThreadId = fromGlobalId(id).id;
-    var {messageID, threadID} = addMessage(text, localThreadId);
-    return {messageID, threadID};
-  }
-});
-
-var GraphQLMarkThreadAsReadMutation = mutationWithClientMutationId({
-  name: 'MarkThreadAsRead',
-  inputFields: {
-    id: { type: new GraphQLNonNull(GraphQLID) },
-  },
-  outputFields: {
-    thread: {
-      type: GraphQLThread,
-      resolve: ({localThreadId}) => getThread(localThreadId),
-    },
-    viewer: {
-      type: GraphQLUser,
-      resolve: () => getViewer(),
-    },
-  },
-  mutateAndGetPayload: ({id}) => {
-    var localThreadId = fromGlobalId(id).id;
-    markThreadAsRead(localThreadId);
-    return {localThreadId};
-  },
-});
-
-var GraphQLSetViewerNameMutation = mutationWithClientMutationId({
-  name: 'SetViewerName',
-  inputFields: {
-    name: { type: new GraphQLNonNull(GraphQLString)}
-  },
-  outputFields: {
-    viewer: {
-      type: GraphQLUser,
-      resolve: ({}) => getViewer(),
-    },
-  },
-  mutateAndGetPayload: ({name}) => {
-    setViewerName(name);
-    return {};
   },
 });
 
